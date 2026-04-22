@@ -12,6 +12,7 @@ import {
 import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
+const clientLoginUrl = `${process.env.CLIENT_URL || 'http://localhost:5173'}/login?error=google_auth_failed`;
 
 // Local auth routes
 router.post('/register', register);
@@ -27,7 +28,7 @@ router.get('/google',
 );
 
 router.get('/google/callback',
-  passport.authenticate('google', { session: false, failureRedirect: '/login?error=google_auth_failed' }),
+  passport.authenticate('google', { session: false, failureRedirect: clientLoginUrl }),
   googleCallback
 );
 

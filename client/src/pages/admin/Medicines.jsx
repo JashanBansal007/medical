@@ -7,6 +7,8 @@ import {
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 // Admin Sidebar
 const AdminSidebar = ({ active }) => {
   const menuItems = [
@@ -517,7 +519,7 @@ const ImportModal = ({ isOpen, onClose, onSuccess, categories }) => {
   };
 
   const downloadTemplate = () => {
-    window.open('http://localhost:5000/api/medicines/template', '_blank');
+    window.open(`${API_URL}/api/medicines/template`, '_blank');
   };
 
   const handleClose = () => {

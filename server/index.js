@@ -29,9 +29,27 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const parseAllowedOrigins = () => {
+  const clientUrls = process.env.CLIENT_URLS
+    ? process.env.CLIENT_URLS.split(',').map(url => url.trim()).filter(Boolean)
+    : [];
+  const fallbackClientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+  const merged = [...clientUrls, fallbackClientUrl];
+  return Array.from(new Set(merged));
+};
+
+const allowedOrigins = parseAllowedOrigins();
+
 // Middleware
+app.set('trust proxy', 1);
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
 app.use(express.json());
